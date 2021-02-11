@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-from termcolor import colored
-from tqdm import tqdm
 from individuo import Individuo
 from populacao import Populacao
+from termcolor import colored
+from tqdm import tqdm
 import numpy as np
 import itertools
 import pickle
