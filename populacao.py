@@ -138,7 +138,7 @@ class Populacao:
 		"\nxmax & xmin: " + str(self.melhor_individuo.xmin) +" & "+ str(self.melhor_individuo.xmax) + '\n\n')
 		print('\033[1m' + colored(self.parametros, "green") + '\033[0m')
 
-	def run(self):
+	def exec_ger(self):
 		self.avalia_pop()
 		self.torneio()
 		self.cruzamento()

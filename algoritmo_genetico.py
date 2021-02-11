@@ -28,7 +28,7 @@ populacao.print_parametros()
 
 geracao_atual = 1
 for geracao_atual in tqdm(range(0, populacao.nger), position=0, leave=True):
-	populacao.run()
+	populacao.exec_ger()
 	geracao_atual += 1
 
 fim = time.time()
@@ -41,6 +41,10 @@ print(colored('\033[1m'+"\n-> Pior Indivíduo: %.10f" % populacao.pior_individuo
 print("Xns: ", populacao.pior_individuo.x_ns)
 print(colored('\033[1m'+"\n-> Media Fitness: %.10f" % np.mean(media_ger), "blue")) 
 print(colored('\033[1m'+"\n-> Tempo de execução: ", "green"), "%.4f" % (fim-inicio), "seg.\n")
+
+
+###################################### PLOT GRAPHICS ############################################
+
 
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
 fig.set_size_inches(35, 20)
