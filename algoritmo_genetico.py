@@ -68,7 +68,7 @@ def exec_ag(prmt):
 	return populacao
 
 
-results = [i for i in tqdm(executor.map(exec_ag, parametros,chunksize=chunksize),total=num_args)]
+# results = [i for i in tqdm(executor.map(exec_ag, parametros,chunksize=chunksize),total=num_args)]
 results = [i for i in tqdm(executor.map(exec_ag, parametros),total=num_args)]
 # results = [i for i in ff(executor.map(exec_ger,*list(zip(*parametros)),chunksize=chunksize),total=num_args)]
 
