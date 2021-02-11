@@ -4,7 +4,7 @@ import math
 
 class Individuo:
 	
-	def __init__(self, nbits=100, ndim=10, xmax=3, xmin=-3, fitness=999999, cromo_random=True):
+	def __init__(self, nbits, ndim, xmax, xmin, fitness=999999, cromo_random=True):
 		self.fitness = fitness
 		self.nbits = nbits
 		self.xmin = xmin
