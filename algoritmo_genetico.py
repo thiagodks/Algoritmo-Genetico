@@ -32,6 +32,7 @@ parametros = list(itertools.product(*all_list))
 print("\n\nAlgoritmo Genético em execução...")
 
 MELHOR_INDIVIDUO_GERAL = Individuo(fitness=999999, cromo_random=False)
+PIOR_MELHOR_INDIVIDUO_GERAL = Individuo(fitness=-999999, cromo_random=False)
 PIOR_INDIVIDUO_GERAL = Individuo(fitness=-999999, cromo_random=False)
 NDIM = 5
 
@@ -56,6 +57,10 @@ for prmt in tqdm(parametros, position=0, leave=True):
 		MELHOR_INDIVIDUO_GERAL = populacao.melhor_individuo
 		save_log_pop(populacao, "melhor_ndim="+str(NDIM))
 
+	if populacao.melhor_individuo.fitness > PIOR_MELHOR_INDIVIDUO_GERAL.fitness:
+		PIOR_MELHOR_INDIVIDUO_GERAL = populacao.melhor_individuo
+		save_log_pop(populacao, "pior_melhor_ndim="+str(NDIM))
+
 	if populacao.pior_individuo.fitness > PIOR_INDIVIDUO_GERAL.fitness:
 		PIOR_INDIVIDUO_GERAL = populacao.pior_individuo
 		save_log_pop(populacao, "pior_ndim="+str(NDIM))
@@ -68,6 +73,8 @@ for prmt in tqdm(parametros, position=0, leave=True):
 	print("Xns: ", MELHOR_INDIVIDUO_GERAL.x_ns)
 	print(colored('\033[1m'+"\n-> Pior Indivíduo GERAL: %.10f" % PIOR_INDIVIDUO_GERAL.fitness, "red")) 
 	print("Xns: ", PIOR_INDIVIDUO_GERAL.x_ns)
+	print(colored('\033[1m'+"\n-> Pior Melhor Indivíduo GERAL: %.10f" % PIOR_MELHOR_INDIVIDUO_GERAL.fitness, "red")) 
+	print("Xns: ", PIOR_MELHOR_INDIVIDUO_GERAL.x_ns)
 	print(colored('\033[1m'+"\n-> Media Fitness: %.10f" % np.mean(media_ger), "blue")) 
 	print(colored('\033[1m'+"\n-> Tempo de execução: ", "green"), "%.4f" % (fim-inicio), "seg.\n")
 
@@ -75,7 +82,8 @@ for prmt in tqdm(parametros, position=0, leave=True):
 
 pop_melhor = load_log_pop("melhor_ndim="+str(NDIM))
 pop_pior = load_log_pop("pior_ndim="+str(NDIM))
-populacoes ={"melhor":pop_melhor, "pior": pop_pior}
+pop_pior_melhor = load_log_pop("pior_melhor_ndim="+str(NDIM))
+populacoes ={"melhor":pop_melhor, "pior": pop_pior, "pior_melhor": pop_pior_melhor}
 
 for nome, populacao in populacoes.items():
 

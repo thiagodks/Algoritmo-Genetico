@@ -42,7 +42,7 @@ class Populacao:
 			p1 = np.random.randint(0, self.npop)
 			p2 = np.random.randint(0, self.npop)
 		
-			while p1 == p2: 
+			while p1 == p2:
 				p2 = np.random.randint(0, self.npop)
 		
 			if(self.individuos[p2].fitness > self.individuos[p1].fitness):
