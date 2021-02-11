@@ -6,7 +6,7 @@ from populacao import Populacao
 import numpy as np
 import itertools
 import pickle
-import random
+import random 
 import math
 import time
 
