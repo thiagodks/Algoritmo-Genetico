@@ -33,13 +33,14 @@ print("\n\nAlgoritmo Genético em execução...")
 
 MELHOR_INDIVIDUO_GERAL = Individuo(fitness=999999, cromo_random=False)
 PIOR_INDIVIDUO_GERAL = Individuo(fitness=-999999, cromo_random=False)
+NDIM = 5
 
 for prmt in tqdm(parametros, position=0, leave=True):
 
 	inicio = time.time()
 
 	populacao = Populacao(npop=prmt[0], nger=prmt[1], elitismo=True)
-	populacao.inicializa_indiv(taxa_mutacao=prmt[2], taxa_cruzamento=prmt[3], pv=0.9, nbits=prmt[4], ndim=5, xmax=3, xmin=-3)
+	populacao.inicializa_indiv(taxa_mutacao=prmt[2], taxa_cruzamento=prmt[3], pv=0.9, nbits=prmt[4], ndim=NDIM, xmax=3, xmin=-3)
 	# populacao = Populacao(npop=1000, nger=1000, elitismo=True)
 	# populacao.inicializa_indiv(taxa_mutacao=0.05, taxa_cruzamento=0.8, pv=0.9, nbits=10, ndim=10, xmax=3, xmin=-3)
 	populacao.print_parametros()
@@ -53,27 +54,27 @@ for prmt in tqdm(parametros, position=0, leave=True):
 
 	if populacao.melhor_individuo.fitness < MELHOR_INDIVIDUO_GERAL.fitness:
 		MELHOR_INDIVIDUO_GERAL = populacao.melhor_individuo
-		save_log_pop(populacao, "melhor_ndim="+str(5))
+		save_log_pop(populacao, "melhor_ndim="+str(NDIM))
 
 	if populacao.pior_individuo.fitness > PIOR_INDIVIDUO_GERAL.fitness:
 		PIOR_INDIVIDUO_GERAL = populacao.pior_individuo
-		save_log_pop(populacao, "pior_ndim="+str(5))
+		save_log_pop(populacao, "pior_ndim="+str(NDIM))
 
 	print(colored('\033[1m'+"\n-> Melhor Indivíduo: %.10f" % populacao.melhor_individuo.fitness, "green")) 
 	print("Xns: ", populacao.melhor_individuo.x_ns)
 	print(colored('\033[1m'+"\n-> Pior Indivíduo: %.10f" % populacao.pior_individuo.fitness, "red")) 
 	print("Xns: ", populacao.pior_individuo.x_ns)
 	print(colored('\033[1m'+"\n-> Melhor Indivíduo GERAL: %.10f" % MELHOR_INDIVIDUO_GERAL.fitness, "green")) 
-	print("Xns: ", populacao.melhor_individuo.x_ns)
+	print("Xns: ", MELHOR_INDIVIDUO_GERAL.x_ns)
 	print(colored('\033[1m'+"\n-> Pior Indivíduo GERAL: %.10f" % PIOR_INDIVIDUO_GERAL.fitness, "red")) 
-	print("Xns: ", populacao.pior_individuo.x_ns)
+	print("Xns: ", PIOR_INDIVIDUO_GERAL.x_ns)
 	print(colored('\033[1m'+"\n-> Media Fitness: %.10f" % np.mean(media_ger), "blue")) 
 	print(colored('\033[1m'+"\n-> Tempo de execução: ", "green"), "%.4f" % (fim-inicio), "seg.\n")
 
 ###################################### PLOT GRAPHICS ############################################
 
-pop_melhor = load_log_pop("melhor_ndim="+str(5))
-pop_pior = load_log_pop("pior_ndim="+str(5))
+pop_melhor = load_log_pop("melhor_ndim="+str(NDIM))
+pop_pior = load_log_pop("pior_ndim="+str(NDIM))
 populacoes ={"melhor":pop_melhor, "pior": pop_pior}
 
 for nome, populacao in populacoes.items():
