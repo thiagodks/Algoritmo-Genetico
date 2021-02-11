@@ -18,6 +18,8 @@ class Populacao:
 		self.pv = pv
 		self.nbits = nbits
 		self.ndim = ndim
+		self.xmax = xmax
+		self.xmin = xmin
 		self.taxa_mutacao = taxa_mutacao
 		self.taxa_cruzamento = taxa_cruzamento
 		self.individuos = [Individuo(nbits=nbits, ndim=ndim, xmax=xmax, xmin=xmin) for i in range(0, self.npop)]
@@ -51,8 +53,10 @@ class Populacao:
 			self.pais.append(vencedor)
 			num_pais += 1
 
+
 	def cruzamento(self):
-		self.individuos_interm = [Individuo(cromo_random=False) for i in range(0, self.npop)]
+		self.individuos_interm = [Individuo(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
+								 xmin=self.xmin, cromo_random=False) for i in range(0, self.npop)]
 		self.num_individuos = 0
 		cont = 0
 		for i in range(0, len(self.pais), 2):
@@ -68,6 +72,7 @@ class Populacao:
 				self.num_individuos += 2
 				cont += 2
 
+
 	def mutacao(self, individuo):
 		for indice, gene in enumerate(individuo.cromossomo):
 			if random.random() < self.taxa_mutacao:
@@ -77,8 +82,10 @@ class Populacao:
 		return individuo
 
 	def calc_log_fitness(self):
-		self.melhor_individuo = Individuo(nbits=self.nbits, cromo_random=False)
-		pior_individuo_ger = Individuo(nbits=self.nbits, fitness=-999999, cromo_random=False)
+		self.melhor_individuo = Individuo(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
+								 xmin=self.xmin, cromo_random=False)
+		pior_individuo_ger = Individuo(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
+								 xmin=self.xmin, fitness=-999999, cromo_random=False)
 		self.media_fitness = 0
 
 		for individuo in self.individuos:
