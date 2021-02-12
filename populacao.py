@@ -5,14 +5,13 @@ import itertools
 import random
 import math
 
-GENERATION_LOG = False
-
 class Populacao:
-	def __init__(self, npop=100, nger=200, elitismo=True):
+	def __init__(self, npop=100, nger=200, elitismo=True, gerar_log_exec=False):
 		self.npop = npop
 		self.nger = nger
-		self.log_fitness = []
+		self.log_ger = []
 		self.elitismo = elitismo
+		self.gerar_log_exec = gerar_log_exec
 
 	def inicializa_indiv(self, taxa_mutacao=0.05, taxa_cruzamento=0.7, pv=0.9, nbits=10, ndim=10, xmax=3, xmin=-3):
 		self.pv = pv
@@ -27,6 +26,7 @@ class Populacao:
 		self.pior_individuo = Individuo(nbits=nbits, ndim=ndim, xmax=xmax, xmin=xmin, fitness=-999999, cromo_random=False)
 		self.nome_arq = ("npop:"+str(self.npop)+"_nger:"+str(self.nger)+"_nbits:"+str(nbits)+"_tm:"+str(taxa_mutacao)+
 						"_xmin:"+str(xmin)+"_xmax:"+str(xmax)+"_ndim:"+str(ndim)+"_tc:"+str(taxa_cruzamento)+"_elitismo:"+str(self.elitismo)+"_")
+		self.parametros = self.get_parametros()
 
 	def avalia_pop(self):
 		for i in range(0, len(self.individuos)):
@@ -81,35 +81,34 @@ class Populacao:
 
 		return individuo
 
-	def calc_log_fitness(self):
+	def calc_log_ger(self):
 		self.melhor_individuo = Individuo(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
 								 xmin=self.xmin, cromo_random=False)
-		pior_individuo_ger = Individuo(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
-								 xmin=self.xmin, fitness=-999999, cromo_random=False)
-		self.media_fitness = 0
+		self.media_fitness = []
+		self.mediana_fitness = []
+		self.std_fitness = []
 
 		for individuo in self.individuos:
 			if individuo.fitness < self.melhor_individuo.fitness:
 				self.melhor_individuo = individuo
-			if individuo.fitness > pior_individuo_ger.fitness:
-				pior_individuo_ger = individuo
 
-			self.media_fitness += individuo.fitness
+			self.media_fitness.append(individuo.fitness)
+			self.mediana_fitness.append(individuo.fitness)
+			self.std_fitness.append(individuo.fitness)
 
-		self.media_fitness /= len(self.individuos)
-		
-		if pior_individuo_ger.fitness > self.pior_individuo.fitness:
-			self.pior_individuo = pior_individuo_ger
+		self.media_fitness = np.mean(self.media_fitness)
+		self.mediana_fitness = np.median(self.mediana_fitness)
+		self.std_fitness = np.std(self.std_fitness)
 
-		if GENERATION_LOG:
+		if self.gerar_log_exec:
 			print(colored("\n\nMELHOR Individuo: ", "green"), self.melhor_individuo.fitness)
 			print(colored("Xns: ", "green"), self.melhor_individuo.x_ns)
-			print(colored("\nPIOR Individuo: ", "red"), pior_individuo_ger.fitness)
-			print(colored("Xns: ", "red"), pior_individuo_ger.x_ns)
 			print(colored("\nMEDIA fitness: ", "blue"), self.media_fitness)
+			print(colored("\nMEDIANA fitness: ", "blue"), self.mediana_fitness)
+			print(colored("\nSTD fitness: ", "blue"), self.std_fitness)
 			self.print_pop(self.individuos, "Populacao atual: ")
 		
-		self.log_fitness.append((self.melhor_individuo.fitness, pior_individuo_ger.fitness, self.media_fitness))
+		self.log_ger.append((self.melhor_individuo.fitness, self.media_fitness, self.mediana_fitness, self.std_fitness))
 	
 	def exec_elitismo(self):
 		self.individuos[np.random.randint(0, self.npop)] = self.melhor_individuo
@@ -132,8 +131,8 @@ class Populacao:
 				print("%.4f" % individuo.fitness, end=' | ')
 		input("")
 
-	def print_parametros(self):
-		self.parametros = ("\n\nNúmero de Individuos: " + str(self.npop) +
+	def get_parametros(self):
+		return ('\033[1m' + "\n\nNúmero de Individuos: " + str(self.npop) +
 		"\nNúmero de Gerações: " + str(self.nger) +
 		"\nElitismo: " + str(self.elitismo) +
 		"\nTaxa de Mutação: " + str(self.taxa_mutacao) +
@@ -142,13 +141,12 @@ class Populacao:
 		"\nNumero de bits: " + str(self.melhor_individuo.nbits) +
 		"\nNumero de dimensões: " + str(self.melhor_individuo.ndim) +
 		"\nTotal de bits (Indivíduo): " + str(self.melhor_individuo.ndim * self.melhor_individuo.nbits) +
-		"\nxmax & xmin: " + str(self.melhor_individuo.xmin) +" & "+ str(self.melhor_individuo.xmax) + '\n\n')
-		print('\033[1m' + colored(self.parametros, "green") + '\033[0m')
+		"\nxmax & xmin: " + str(self.melhor_individuo.xmin) +" & "+ str(self.melhor_individuo.xmax) + '\n' + '\033[0m')
 
 	def exec_ger(self):
 		self.avalia_pop()
 		self.torneio()
 		self.cruzamento()
-		self.calc_log_fitness()
+		self.calc_log_ger()
 		self.subst_pop()
 		if self.elitismo: self.exec_elitismo()

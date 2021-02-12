@@ -11,147 +11,108 @@ import pickle
 import random 
 import math
 import time
+import util
 import os
 
-def save_log_pop(populacao, nome):
-	with open('solucoes/'+nome+'.pickle', 'wb') as fp:
-		pickle.dump(populacao, fp)
-
-def load_log_pop(name):
-	with open('solucoes/'+name+'.pickle', 'rb') as fp:
-		populacao = pickle.load(fp)
-	return populacao
-
-npop = [i for i in range(100, 500, 100)]
-nger = [i for i in range(100, 500, 100)]
-taxa_mutacao = [0.01, 0.05, 0.1, 0.15]
-taxa_cruzamento = [0.6, 0.8, 1]
-nbits = [i for i in range(2, 12, 2)]
-
-print(npop, nger, taxa_cruzamento, taxa_mutacao, nbits)
-all_list = [npop, nger, taxa_mutacao, taxa_cruzamento, nbits]
-parametros = list(itertools.product(*all_list)) 
-
-print("\n\nAlgoritmo Genético em execução...")
-
-MELHOR_INDIVIDUO_GERAL = Individuo(fitness=999999, cromo_random=False)
-PIOR_MELHOR_INDIVIDUO_GERAL = Individuo(fitness=-999999, cromo_random=False)
-PIOR_INDIVIDUO_GERAL = Individuo(fitness=-999999, cromo_random=False)
-NDIM = 5
-
-executor = ProcessPoolExecutor()
-num_args = len(parametros)
-chunksize = int(num_args/multiprocessing.cpu_count())
-
-
-# print("parametros: ", parametros)
-# print("\n\n\n")
-# print(*list(zip(*parametros)))
-# input("")
-# for prmt in tqdm(parametros, position=0, leave=True):
 def exec_ag(prmt):
-
-	inicio = time.time()
 
 	populacao = Populacao(npop=prmt[0], nger=prmt[1], elitismo=True)
 	populacao.inicializa_indiv(taxa_mutacao=prmt[2], taxa_cruzamento=prmt[3], pv=0.9, nbits=prmt[4], ndim=NDIM, xmax=3, xmin=-3)
-	# populacao = Populacao(npop=1000, nger=1000, elitismo=True)
-	# populacao.inicializa_indiv(taxa_mutacao=0.05, taxa_cruzamento=0.8, pv=0.9, nbits=10, ndim=10, xmax=3, xmin=-3)
-	# populacao.print_parametros()
 
 	for geracao_atual in range(0, populacao.nger):
-	# for geracao_atual in tqdm(range(0, populacao.nger), position=0, leave=True):
 		populacao.exec_ger()
-
-	fim = time.time()
 
 	return populacao
 
+EXEC_PARALELA = True
 
-# results = [i for i in tqdm(executor.map(exec_ag, parametros,chunksize=chunksize),total=num_args)]
-results = [i for i in tqdm(executor.map(exec_ag, parametros),total=num_args)]
-# results = [i for i in ff(executor.map(exec_ger,*list(zip(*parametros)),chunksize=chunksize),total=num_args)]
+print("\n\nAlgoritmo Genético Paralelo em execução...")
+if not EXEC_PARALELA:
 
+	inicio = time.time()
+	populacao = Populacao(npop=500, nger=100, elitismo=True, gerar_log_exec=False)
+	populacao.inicializa_indiv(taxa_mutacao=0.05, taxa_cruzamento=0.8, pv=0.9, nbits=10, ndim=5, xmax=3, xmin=-3)
+	print(populacao.parametros)
 
-	# log_fitness = list(map(list, zip(*populacao.log_fitness)))
-	# melhores_ger, piores_ger, media_ger = log_fitness[0], log_fitness[1], log_fitness[2]
+	for geracao_atual in tqdm(range(0, populacao.nger), position=0, leave=True):
+		populacao.exec_ger()
 
-	# if populacao.melhor_individuo.fitness < MELHOR_INDIVIDUO_GERAL.fitness:
-	# 	MELHOR_INDIVIDUO_GERAL = populacao.melhor_individuo
-	# 	save_log_pop(populacao, "melhor_ndim="+str(NDIM))
+	fim = time.time()
+	log_ger = list(map(list, zip(*populacao.log_ger)))
+	melhores_ger, media_ger, mediana_ger, std_fitness = log_ger[0], log_ger[1], log_ger[2], log_ger[3]
 
-	# if populacao.melhor_individuo.fitness > PIOR_MELHOR_INDIVIDUO_GERAL.fitness:
-	# 	PIOR_MELHOR_INDIVIDUO_GERAL = populacao.melhor_individuo
-	# 	save_log_pop(populacao, "pior_melhor_ndim="+str(NDIM))
+	print(colored('\033[1m'+"\n-> Solução Encontrada: ", "green")) 
+	print(colored('\033[1m'+"\n-> Melhor Indivíduo: %.10f" % populacao.melhor_individuo.fitness, "green")) 
+	print("Xns: ", populacao.melhor_individuo.x_ns)
+	print(colored('\033[1m'+"\n-> Media Fitness : %.10f" % populacao.media_fitness, "blue")) 
+	print(colored('\033[1m'+"\n-> Media Fitness Geral: %.10f" % np.mean(media_ger), "blue")) 
+	print(colored('\033[1m'+"\n-> Mediana Fitness : %.10f" % populacao.mediana_fitness, "blue")) 
+	print(colored('\033[1m'+"\n-> Mediana Fitness Geral: %.10f" % np.mean(mediana_ger), "blue")) 
+	print(colored('\033[1m'+"\n-> STD Fitness : %.10f" % populacao.std_fitness, "blue")) 
+	print(colored('\033[1m'+"\n-> STD Fitness Geral: %.10f" % np.mean(std_fitness), "blue")) 
+	print(colored('\033[1m'+"\n-> Tempo de execução: ", "green"), "%.4f" % (fim-inicio), "seg.\n")
 
-	# if populacao.pior_individuo.fitness > PIOR_INDIVIDUO_GERAL.fitness:
-	# 	PIOR_INDIVIDUO_GERAL = populacao.pior_individuo
-	# 	save_log_pop(populacao, "pior_ndim="+str(NDIM))
+	util.plot_graphics(populacao)
 
-	# print(colored('\033[1m'+"\n-> Melhor Indivíduo: %.10f" % populacao.melhor_individuo.fitness, "green")) 
-	# print("Xns: ", populacao.melhor_individuo.x_ns)
-	# print(colored('\033[1m'+"\n-> Pior Indivíduo: %.10f" % populacao.pior_individuo.fitness, "red")) 
-	# print("Xns: ", populacao.pior_individuo.x_ns)
-	# print(colored('\033[1m'+"\n-> Melhor Indivíduo GERAL: %.10f" % MELHOR_INDIVIDUO_GERAL.fitness, "green")) 
-	# print("Xns: ", MELHOR_INDIVIDUO_GERAL.x_ns)
-	# print(colored('\033[1m'+"\n-> Pior Indivíduo GERAL: %.10f" % PIOR_INDIVIDUO_GERAL.fitness, "red")) 
-	# print("Xns: ", PIOR_INDIVIDUO_GERAL.x_ns)
-	# print(colored('\033[1m'+"\n-> Pior Melhor Indivíduo GERAL: %.10f" % PIOR_MELHOR_INDIVIDUO_GERAL.fitness, "red")) 
-	# print("Xns: ", PIOR_MELHOR_INDIVIDUO_GERAL.x_ns)
-	# print(colored('\033[1m'+"\n-> Media Fitness: %.10f" % np.mean(media_ger), "blue")) 
-	# print(colored('\033[1m'+"\n-> Tempo de execução: ", "green"), "%.4f" % (fim-inicio), "seg.\n")
+else:
 
-###################################### PLOT GRAPHICS ############################################
+	inicio = time.time()
 
-# pop_melhor = load_log_pop("melhor_ndim="+str(NDIM))
-# pop_pior = load_log_pop("pior_ndim="+str(NDIM))
-# pop_pior_melhor = load_log_pop("pior_melhor_ndim="+str(NDIM))
-# populacoes ={"melhor":pop_melhor, "pior": pop_pior, "pior_melhor": pop_pior_melhor}
+	npop = [i for i in range(400, 500, 100)]
+	nger = [i for i in range(400, 500, 100)]
+	taxa_mutacao = [0.01, 0.05, 0.1, 0.15]
+	# taxa_mutacao = [0.01]
+	taxa_cruzamento = [0.6, 0.8, 1]
+	nbits = [i for i in range(2, 12, 2)]
 
-# for nome, populacao in populacoes.items():
+	# npop = [i for i in range(100, 500, 100)]
+	# nger = [i for i in range(100, 500, 100)]
+	# taxa_mutacao = [0.01, 0.05, 0.1, 0.15]
+	# taxa_cruzamento = [0.6, 0.8, 1]
+	# nbits = [i for i in range(2, 12, 2)]
+	NDIM = 5
 
-# 	log_fitness = list(map(list, zip(*populacao.log_fitness)))
-# 	melhores_ger, piores_ger, media_ger = log_fitness[0], log_fitness[1], log_fitness[2]
+	# print(npop, nger, taxa_cruzamento, taxa_mutacao, nbits)
+	all_list = [npop, nger, taxa_mutacao, taxa_cruzamento, nbits]
+	parametros = list(itertools.product(*all_list)) 
 
-# 	fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
-# 	fig.set_size_inches(35, 20)
-# 	title = fig.suptitle('Fitness - AG', fontsize=40, x=0.52)
+	executor = ProcessPoolExecutor()
+	num_args = len(parametros)
+	chunksize = int(num_args/multiprocessing.cpu_count())
 
-# 	plt.rcParams.update({'font.size': 20})
-# 	plt.gcf().text(0.01, 0.3, (populacao.parametros + 'Melhor Fitness: %.7f' % populacao.melhor_individuo.fitness +
-# 					 '\n'+ populacao.melhor_individuo.show_xns() +
-# 					 '\n\nPior Fitness: %.7f' % populacao.pior_individuo.fitness +
-# 					 '\n' + populacao.pior_individuo.show_xns() +
-# 					 '\n\nMedia Fitness: %.7f' % np.mean(media_ger)), fontsize=16)
+	results = [i for i in tqdm(executor.map(exec_ag, parametros),total=num_args)]
+	melhor_solucao = results[0]
+	pior_solucao = results[0]
+	for populacao in results:
+		if populacao.melhor_individuo.fitness < melhor_solucao.melhor_individuo.fitness:
+			melhor_solucao = populacao
+		if populacao.melhor_individuo.fitness > pior_solucao.melhor_individuo.fitness:
+			pior_solucao = populacao
 
-# 	ax1.set_title("Melhores fitness a cada geração (1 a "+str(populacao.nger)+")")
-# 	ax1.set_xlabel("Gerações", fontsize='medium')
-# 	ax1.set_ylabel("Fitness", fontsize='medium')
-# 	ax1.plot(list(range(0, populacao.nger)), melhores_ger[0:], 'g--', label='Melhor Fitness: %.7f' % populacao.melhor_individuo.fitness)
-# 	ax1.legend(ncol=3)
-# 	ax1.tick_params(labelsize=18)
+	util.plot_graphics(melhor_solucao, "melhor_solucao")
+	util.plot_graphics(pior_solucao, "pior_solucao")
+	util.save_log_pop(melhor_solucao, "melhor_solucao_ndim:"+str(NDIM)+"_")
+	util.save_log_pop(pior_solucao, "pior_solucao_ndim:"+str(NDIM)+"_")
 
-# 	ax2.set_title("Melhores fitness a cada geração (10 a "+str(populacao.nger)+")")
-# 	ax2.set_xlabel("Gerações", fontsize='medium')
-# 	ax2.set_ylabel("Fitness", fontsize='medium')
-# 	ax2.plot(list(range(10, populacao.nger)), melhores_ger[10:], 'g--', label='Melhor Fitness: %.7f' % populacao.melhor_individuo.fitness)
-# 	ax2.legend(ncol=3)
-# 	ax2.tick_params(labelsize=18)
+	print(colored('\033[1m'+"\n#####################################\n-> Melhor Solução Encontrada: ", "green"), end="")
+	print(melhor_solucao.parametros)
+	print(colored('\033[1m'+"-> Melhor Indivíduo: %.10f" % melhor_solucao.melhor_individuo.fitness, "green")) 
+	print("Xns: ", melhor_solucao.melhor_individuo.x_ns)
+	print(colored('\033[1m'+"\n-> Media Fitness : %.10f" % melhor_solucao.media_fitness, "blue")) 
+	print(colored('\033[1m'+"\n-> Mediana Fitness : %.10f" % melhor_solucao.mediana_fitness, "blue")) 
+	print(colored('\033[1m'+"\n-> STD Fitness : %.10f" % melhor_solucao.std_fitness, "blue")) 
 
-# 	ax3.set_title("Piores fitness a cada geração")
-# 	ax3.set_xlabel("Gerações", fontsize='medium')
-# 	ax3.set_ylabel("Fitness", fontsize='medium')
-# 	ax3.plot(list(range(0, populacao.nger)), piores_ger, 'r--', label='Pior Fitness: %.7f' % populacao.pior_individuo.fitness)
-# 	ax3.legend(ncol=3)
-# 	ax3.tick_params(labelsize=18)
+	print(colored('\033[1m'+"\n#####################################\n-> Pior Solução Encontrada: ", "red"), end="") 
+	print(pior_solucao.parametros)
+	print(colored('\033[1m'+"-> Melhor Indivíduo: %.10f" % pior_solucao.melhor_individuo.fitness, "green")) 
+	print("Xns: ", pior_solucao.melhor_individuo.x_ns)
+	print(colored('\033[1m'+"\n-> Media Fitness : %.10f" % pior_solucao.media_fitness, "blue")) 
+	print(colored('\033[1m'+"\n-> Mediana Fitness : %.10f" % pior_solucao.mediana_fitness, "blue")) 
+	print(colored('\033[1m'+"\n-> STD Fitness : %.10f" % pior_solucao.std_fitness, "blue")) 
 
-# 	ax4.set_title("Media das fitness a cada geração")
-# 	ax4.set_xlabel("Gerações", fontsize='medium')
-# 	ax4.set_ylabel("Fitness", fontsize='medium')
-# 	ax4.plot(list(range(0, populacao.nger)), media_ger, 'b--', label='Media Fitness: %.7f' % np.mean(media_ger))
-# 	ax4.legend(ncol=3)
-# 	ax4.tick_params(labelsize=18)
+	fim = time.time()
+	print(colored('\033[1m'+"\n-> Tempo de execução: ", "green"), "%.4f" % (fim-inicio), "seg.\n")
 
-# 	plt.subplots_adjust(left=0.15)
-# 	# fig.savefig('graficos/'+populacao.nome_arq+'fitness.png')
-# 	fig.savefig('graficos/'+nome+"_"+populacao.nome_arq+'fitness.png')
+	# for populacao in results:
+	# 	print("parametros: ", populacao.parametros)
+	# 	print("fitness: ", populacao.melhor_individuo.fitness, end="\n\n")
