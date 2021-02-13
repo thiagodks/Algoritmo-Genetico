@@ -17,7 +17,7 @@ def plot_graphics(populacao, name_save=""):
 	melhores_ger, media_ger, mediana_ger, std_fitness = log_ger[0], log_ger[1], log_ger[2], log_ger[3]
 
 	fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
-	plt.tight_layout()
+	# plt.tight_layout()
 	fig.set_size_inches(40, 11)
 	title = fig.suptitle('Fitness - AG', fontsize=40, x=0.52, y=0.97)
 

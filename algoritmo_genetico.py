@@ -12,8 +12,10 @@ import sys
 
 if len(sys.argv) != 2:
 	print(colored("\nParametros Inválidos!\n", "red"))
+	sys.exit()
 elif (sys.argv[1] != '1' and sys.argv[1] != '0'):
 	print(colored("\nParametros Inválidos!\n", "red"))
+	sys.exit()
 
 def exec_ag(prmt):
 
@@ -31,8 +33,8 @@ if not EXEC_PARALELA:
 
 	print("\n\nAlgoritmo Genético em execução...")
 	inicio = time.time()
-	populacao = Populacao(npop=100, nger=300, elitismo=True, gerar_log_exec=False)
-	populacao.inicializa_indiv(taxa_mutacao=0.1, taxa_cruzamento=0.8, pv=0.9, nbits=4, ndim=10, xmax=3, xmin=-3)
+	populacao = Populacao(npop=100, nger=100, elitismo=False, gerar_log_exec=False)
+	populacao.inicializa_indiv(taxa_mutacao=0.15, taxa_cruzamento=0.6, pv=0.9, nbits=6, ndim=10, xmax=3, xmin=-3)
 	print('\033[1m' + populacao.parametros + '\033[0m')
 
 	for geracao_atual in tqdm(range(0, populacao.nger), position=0, leave=True):
