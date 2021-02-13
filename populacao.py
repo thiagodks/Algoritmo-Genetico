@@ -53,6 +53,7 @@ class Populacao:
 			self.pais.append(vencedor)
 			num_pais += 1
 
+		# self.print_pop(self.pais, "pais selecionados")
 
 	def cruzamento(self):
 		self.individuos_interm = [Individuo(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
@@ -71,6 +72,8 @@ class Populacao:
 				self.individuos_interm[cont+1] = self.mutacao(self.individuos_interm[cont+1])
 				self.num_individuos += 2
 				cont += 2
+
+		# print("num_individuos: ", self.num_individuos)
 
 
 	def mutacao(self, individuo):
@@ -115,10 +118,12 @@ class Populacao:
 
 	def subst_pop(self):
 		indices_disponiveis = [i for i in range(0, self.npop)]
+		# self.print_pop(self.individuos, "Populacao antes")
 		for novo_indv in range(0, self.num_individuos):
 			indice_subst = random.choice(indices_disponiveis)
 			self.individuos[indice_subst] = self.individuos_interm[novo_indv]
 			indices_disponiveis.remove(indice_subst) 
+		# self.print_pop(self.individuos, "Populacao depois")
 
 	def print_pop(self, individuos, titulo=""):
 		print("\n", titulo)
@@ -132,7 +137,7 @@ class Populacao:
 		input("")
 
 	def get_parametros(self):
-		return ('\033[1m' + "\n\nNúmero de Individuos: " + str(self.npop) +
+		return ("\n\nNúmero de Individuos: " + str(self.npop) +
 		"\nNúmero de Gerações: " + str(self.nger) +
 		"\nElitismo: " + str(self.elitismo) +
 		"\nTaxa de Mutação: " + str(self.taxa_mutacao) +
@@ -141,10 +146,11 @@ class Populacao:
 		"\nNumero de bits: " + str(self.melhor_individuo.nbits) +
 		"\nNumero de dimensões: " + str(self.melhor_individuo.ndim) +
 		"\nTotal de bits (Indivíduo): " + str(self.melhor_individuo.ndim * self.melhor_individuo.nbits) +
-		"\nxmax & xmin: " + str(self.melhor_individuo.xmin) +" & "+ str(self.melhor_individuo.xmax) + '\n' + '\033[0m')
+		"\nxmax & xmin: " + str(self.melhor_individuo.xmin) +" & "+ str(self.melhor_individuo.xmax) + '\n')
 
 	def exec_ger(self):
 		self.avalia_pop()
+		# self.print_pop(self.individuos, "Populacao atual")
 		self.torneio()
 		self.cruzamento()
 		self.calc_log_ger()

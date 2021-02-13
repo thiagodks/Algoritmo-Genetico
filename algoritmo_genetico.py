@@ -1,5 +1,4 @@
 from concurrent.futures import ProcessPoolExecutor
-import matplotlib.pyplot as plt
 from individuo import Individuo
 from populacao import Populacao
 from termcolor import colored
@@ -7,32 +6,34 @@ import multiprocessing
 from tqdm import tqdm
 import numpy as np
 import itertools
-import pickle
-import random 
-import math
 import time
 import util
-import os
+import sys
+
+if len(sys.argv) != 2:
+	print(colored("\nParametros Inválidos!\n", "red"))
+elif (sys.argv[1] != '1' and sys.argv[1] != '0'):
+	print(colored("\nParametros Inválidos!\n", "red"))
 
 def exec_ag(prmt):
 
 	populacao = Populacao(npop=prmt[0], nger=prmt[1], elitismo=True)
-	populacao.inicializa_indiv(taxa_mutacao=prmt[2], taxa_cruzamento=prmt[3], pv=0.9, nbits=prmt[4], ndim=NDIM, xmax=3, xmin=-3)
+	populacao.inicializa_indiv(taxa_mutacao=prmt[2], taxa_cruzamento=prmt[3], pv=0.9, nbits=prmt[4], ndim=prmt[5], xmax=3, xmin=-3)
 
 	for geracao_atual in range(0, populacao.nger):
 		populacao.exec_ger()
 
 	return populacao
 
-EXEC_PARALELA = True
+EXEC_PARALELA = int(sys.argv[1])
 
-print("\n\nAlgoritmo Genético Paralelo em execução...")
 if not EXEC_PARALELA:
 
+	print("\n\nAlgoritmo Genético em execução...")
 	inicio = time.time()
-	populacao = Populacao(npop=500, nger=100, elitismo=True, gerar_log_exec=False)
-	populacao.inicializa_indiv(taxa_mutacao=0.05, taxa_cruzamento=0.8, pv=0.9, nbits=10, ndim=5, xmax=3, xmin=-3)
-	print(populacao.parametros)
+	populacao = Populacao(npop=100, nger=300, elitismo=True, gerar_log_exec=False)
+	populacao.inicializa_indiv(taxa_mutacao=0.1, taxa_cruzamento=0.8, pv=0.9, nbits=4, ndim=10, xmax=3, xmin=-3)
+	print('\033[1m' + populacao.parametros + '\033[0m')
 
 	for geracao_atual in tqdm(range(0, populacao.nger), position=0, leave=True):
 		populacao.exec_ger()
@@ -56,26 +57,27 @@ if not EXEC_PARALELA:
 
 else:
 
+	print("\n\nAlgoritmo Genético Paralelo em execução...")
 	inicio = time.time()
 
-	npop = [i for i in range(400, 500, 100)]
-	nger = [i for i in range(400, 500, 100)]
-	taxa_mutacao = [0.01, 0.05, 0.1, 0.15]
-	# taxa_mutacao = [0.01]
-	taxa_cruzamento = [0.6, 0.8, 1]
-	nbits = [i for i in range(2, 12, 2)]
-
-	# npop = [i for i in range(100, 500, 100)]
-	# nger = [i for i in range(100, 500, 100)]
+	# npop = [i for i in range(400, 500, 100)]
+	# nger = [i for i in range(400, 500, 100)]
 	# taxa_mutacao = [0.01, 0.05, 0.1, 0.15]
+	# # taxa_mutacao = [0.01]
 	# taxa_cruzamento = [0.6, 0.8, 1]
 	# nbits = [i for i in range(2, 12, 2)]
-	NDIM = 5
+
+	npop = [i for i in range(100, 500, 100)]
+	nger = [i for i in range(100, 500, 100)]
+	taxa_mutacao = [0.01, 0.05, 0.1, 0.15]
+	taxa_cruzamento = [0.6, 0.8, 1]
+	nbits = [i for i in range(4, 12, 2)]
+	ndim = [2, 5, 10]
+	# NDIM = 5
 
 	# print(npop, nger, taxa_cruzamento, taxa_mutacao, nbits)
-	all_list = [npop, nger, taxa_mutacao, taxa_cruzamento, nbits]
+	all_list = [npop, nger, taxa_mutacao, taxa_cruzamento, nbits, ndim]
 	parametros = list(itertools.product(*all_list)) 
-
 	executor = ProcessPoolExecutor()
 	num_args = len(parametros)
 	chunksize = int(num_args/multiprocessing.cpu_count())
@@ -91,8 +93,8 @@ else:
 
 	util.plot_graphics(melhor_solucao, "melhor_solucao")
 	util.plot_graphics(pior_solucao, "pior_solucao")
-	util.save_log_pop(melhor_solucao, "melhor_solucao_ndim:"+str(NDIM)+"_")
-	util.save_log_pop(pior_solucao, "pior_solucao_ndim:"+str(NDIM)+"_")
+	util.save_log_pop(melhor_solucao, "melhor_solucao_")
+	util.save_log_pop(pior_solucao, "pior_solucao_")
 
 	print(colored('\033[1m'+"\n#####################################\n-> Melhor Solução Encontrada: ", "green"), end="")
 	print(melhor_solucao.parametros)
@@ -112,7 +114,3 @@ else:
 
 	fim = time.time()
 	print(colored('\033[1m'+"\n-> Tempo de execução: ", "green"), "%.4f" % (fim-inicio), "seg.\n")
-
-	# for populacao in results:
-	# 	print("parametros: ", populacao.parametros)
-	# 	print("fitness: ", populacao.melhor_individuo.fitness, end="\n\n")

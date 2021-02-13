@@ -11,7 +11,8 @@ class Individuo:
 		self.xmax = xmax
 		self.ndim = ndim
 		self.cromossomo = list(np.random.randint(0,2, (self.nbits * self.ndim))) if cromo_random else [None] * (self.nbits * self.ndim)
-	
+		# print("cromossomo: ", self.cromossomo)
+
 	def calc_fitness(self):
 		self.fitness = self.func_obj(self.mapeamento())
 
@@ -24,10 +25,15 @@ class Individuo:
 	
 	def mapeamento(self):
 		splited = list(self.chunks(self.cromossomo, self.ndim))
+		# print("cromossomo: ", self.cromossomo)
+		# print("splited: ", splited)
+		# print("ndim: ", self.ndim)
 		self.x_ns = []
 		for cromo_splited in splited:
 			x_i = self.xmin + (((self.xmax - self.xmin)/((2 ** (self.nbits)) -1)) * self.bin_to_int(cromo_splited))
 			self.x_ns.append(x_i)
+		# print("x_ns: ", self.x_ns)
+		# input("")
 		return self.x_ns
 
 	def bin_to_int(self, code_bin):
