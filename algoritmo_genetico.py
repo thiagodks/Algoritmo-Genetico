@@ -18,10 +18,8 @@ elif (sys.argv[1] != '1' and sys.argv[1] != '0'):
 	sys.exit()
 
 def exec_ag(prmt):
-
 	populacao = Populacao(npop=prmt[0], nger=prmt[1], elitismo=True)
 	populacao.inicializa_indiv(taxa_mutacao=prmt[2], taxa_cruzamento=prmt[3], pv=0.9, nbits=prmt[4], ndim=prmt[5], xmax=3, xmin=-3)
-
 	for geracao_atual in range(0, populacao.nger):
 		populacao.exec_ger()
 
@@ -31,11 +29,11 @@ EXEC_PARALELA = int(sys.argv[1])
 
 if not EXEC_PARALELA:
 
-	print("\n\nAlgoritmo Genético em execução...")
+	print("\nAlgoritmo Genético em execução...")
 	inicio = time.time()
-	populacao = Populacao(npop=100, nger=100, elitismo=False, gerar_log_exec=False)
-	populacao.inicializa_indiv(taxa_mutacao=0.15, taxa_cruzamento=0.6, pv=0.9, nbits=6, ndim=10, xmax=3, xmin=-3)
-	print('\033[1m' + populacao.parametros + '\033[0m')
+	populacao = Populacao(npop=1000, nger=500, elitismo=True, gerar_log_exec=False)
+	populacao.inicializa_indiv(taxa_mutacao=0.1, taxa_cruzamento=0.8, pv=0.9, nbits=10, ndim=10, xmax=4, xmin=-4)
+	print(colored('\033[1m' + populacao.parametros + '\033[0m', "green"))
 
 	for geracao_atual in tqdm(range(0, populacao.nger), position=0, leave=True):
 		populacao.exec_ger()
@@ -62,22 +60,13 @@ else:
 	print("\n\nAlgoritmo Genético Paralelo em execução...")
 	inicio = time.time()
 
-	# npop = [i for i in range(400, 500, 100)]
-	# nger = [i for i in range(400, 500, 100)]
-	# taxa_mutacao = [0.01, 0.05, 0.1, 0.15]
-	# # taxa_mutacao = [0.01]
-	# taxa_cruzamento = [0.6, 0.8, 1]
-	# nbits = [i for i in range(2, 12, 2)]
-
 	npop = [i for i in range(100, 500, 100)]
 	nger = [i for i in range(100, 500, 100)]
 	taxa_mutacao = [0.01, 0.05, 0.1, 0.15]
 	taxa_cruzamento = [0.6, 0.8, 1]
 	nbits = [i for i in range(4, 12, 2)]
 	ndim = [2, 5, 10]
-	# NDIM = 5
 
-	# print(npop, nger, taxa_cruzamento, taxa_mutacao, nbits)
 	all_list = [npop, nger, taxa_mutacao, taxa_cruzamento, nbits, ndim]
 	parametros = list(itertools.product(*all_list)) 
 	executor = ProcessPoolExecutor()
@@ -85,8 +74,10 @@ else:
 	chunksize = int(num_args/multiprocessing.cpu_count())
 
 	results = [i for i in tqdm(executor.map(exec_ag, parametros),total=num_args)]
+
 	melhor_solucao = results[0]
 	pior_solucao = results[0]
+
 	for populacao in results:
 		if populacao.melhor_individuo.fitness < melhor_solucao.melhor_individuo.fitness:
 			melhor_solucao = populacao
