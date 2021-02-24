@@ -1,17 +1,19 @@
-from individuo import Individuo
+from individuo import Individuo_Bin
+from individuo import Individuo_Real
 from termcolor import colored
 import numpy as np
 import itertools
 import random
-import math 
+import math
 
 class Populacao:
-	def __init__(self, npop=100, nger=200, elitismo=True, gerar_log_exec=False):
+	def __init__(self, npop=100, nger=200, elitismo=True, gerar_log_exec=False, tipo_rep='bin'):
 		self.npop = npop
 		self.nger = nger
 		self.log_ger = []
 		self.elitismo = elitismo
 		self.gerar_log_exec = gerar_log_exec
+		self.tipo_rep = tipo_rep
 
 	def inicializa_indiv(self, taxa_mutacao=0.05, taxa_cruzamento=0.7, pv=0.9, nbits=10, ndim=10, xmax=3, xmin=-3):
 		self.pv = pv
@@ -21,9 +23,9 @@ class Populacao:
 		self.xmin = xmin
 		self.taxa_mutacao = taxa_mutacao
 		self.taxa_cruzamento = taxa_cruzamento
-		self.individuos = [Individuo(nbits=nbits, ndim=ndim, xmax=xmax, xmin=xmin) for i in range(0, self.npop)]
-		self.melhor_individuo = Individuo(nbits=nbits, ndim=ndim, xmax=xmax, xmin=xmin, cromo_random=False)
-		self.pior_individuo = Individuo(nbits=nbits, ndim=ndim, xmax=xmax, xmin=xmin, fitness=-999999, cromo_random=False)
+		self.individuos = [Individuo_Bin(nbits=nbits, ndim=ndim, xmax=xmax, xmin=xmin, taxa_mutacao=taxa_mutacao) for i in range(0, self.npop)]
+		self.melhor_individuo = Individuo_Bin(nbits=nbits, ndim=ndim, xmax=xmax, xmin=xmin, cromo_random=False, taxa_mutacao=taxa_mutacao)
+		self.pior_individuo = Individuo_Bin(nbits=nbits, ndim=ndim, xmax=xmax, xmin=xmin, fitness=-999999, cromo_random=False, taxa_mutacao=taxa_mutacao)
 		self.nome_arq = ("npop:"+str(self.npop)+"_nger:"+str(self.nger)+"_nbits:"+str(nbits)+"_tm:"+str(taxa_mutacao)+
 						"_xmin:"+str(xmin)+"_xmax:"+str(xmax)+"_ndim:"+str(ndim)+"_tc:"+str(taxa_cruzamento)+"_elitismo:"+str(self.elitismo)+"_")
 		self.parametros = self.get_parametros()
@@ -54,8 +56,8 @@ class Populacao:
 			num_pais += 1
 
 	def cruzamento(self):
-		self.individuos_interm = [Individuo(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
-								 xmin=self.xmin, cromo_random=False) for i in range(0, self.npop)]
+		self.individuos_interm = [Individuo_Bin(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
+								 xmin=self.xmin, cromo_random=False, taxa_mutacao=self.taxa_mutacao) for i in range(0, self.npop)]
 		self.num_individuos = 0
 		cont = 0
 		for i in range(0, len(self.pais), 2):
@@ -66,22 +68,14 @@ class Populacao:
 				self.individuos_interm[cont].cromossomo = self.pais[i].cromossomo[:corte] + self.pais[i+1].cromossomo[corte:]
 				self.individuos_interm[cont+1].cromossomo = self.pais[i+1].cromossomo[:corte] + self.pais[i].cromossomo[corte:]
 				
-				self.individuos_interm[cont] = self.mutacao(self.individuos_interm[cont])
-				self.individuos_interm[cont+1] = self.mutacao(self.individuos_interm[cont+1])
+				self.individuos_interm[cont].exec_mutacao()
+				self.individuos_interm[cont+1].exec_mutacao()
 				self.num_individuos += 2
 				cont += 2
 
-	def mutacao(self, individuo):
-		for indice, gene in enumerate(individuo.cromossomo):
-			if random.random() < self.taxa_mutacao:
-				novo_gene = 1 if gene == 0 else 0
-				individuo.cromossomo[indice] = novo_gene
-
-		return individuo
-
 	def calc_log_ger(self):
-		self.melhor_individuo = Individuo(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
-								 xmin=self.xmin, cromo_random=False)
+		self.melhor_individuo = Individuo_Bin(nbits=self.nbits, ndim=self.ndim, xmax=self.xmax,
+								 xmin=self.xmin, cromo_random=False, taxa_mutacao=self.taxa_mutacao)
 		self.media_fitness = []
 		self.mediana_fitness = []
 		self.std_fitness = []
