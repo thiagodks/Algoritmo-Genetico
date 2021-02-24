@@ -3,7 +3,7 @@ from termcolor import colored
 import numpy as np
 import itertools
 import random
-import math
+import math 
 
 class Populacao:
 	def __init__(self, npop=100, nger=200, elitismo=True, gerar_log_exec=False):

@@ -9,7 +9,7 @@ import itertools
 import time
 import util
 import sys
-
+ 
 if len(sys.argv) != 2:
 	print(colored("\nParametros Inválidos!\n", "red"))
 	sys.exit()

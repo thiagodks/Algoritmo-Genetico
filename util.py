@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
-
+ 
 def save_log_pop(populacao, nome):
 	with open('solucoes/'+nome+populacao.nome_arq+'.pickle', 'wb') as fp:
 		pickle.dump(populacao, fp)
