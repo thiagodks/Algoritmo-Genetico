@@ -49,3 +49,4 @@ class Individuo:
 		for i, valor in enumerate(self.x_ns):
 			string += "x"+str(i)+": %.7f" % valor + "\n"
 		return string 
+ 
