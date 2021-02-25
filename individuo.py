@@ -65,19 +65,17 @@ class Individuo_Bin(Individuo):
 
 class Individuo_Real(Individuo):
 	
-	def __init__(self, ndim=10, xmax=3, xmin=-3, fitness=999999, cromo_random=True):
-		super().__init__(ndim=ndim, xmax=xmax, xmin=xmin, fitness=fitness, cromo_random=True)
+	def __init__(self, ndim=10, xmax=3, xmin=-3, fitness=999999, cromo_random=True, taxa_mutacao=0.05):
+		super().__init__(ndim=ndim, xmax=xmax, xmin=xmin, fitness=fitness, cromo_random=True, taxa_mutacao=taxa_mutacao)
 		self.cromossomo = [random.uniform(xmin, xmax) for _ in range(ndim)] if cromo_random else [None] * ndim
 
 	def calc_fitness(self):
 		self.fitness = self.func_obj(self.cromossomo)
 
 	def exec_mutacao(self):
-		pass
-		# for indice, gene in enumerate(self.cromossomo):
-		# 	if random.random() < self.taxa_mutacao:
-		# 		novo_gene = 1 if gene == 0 else 0
-		# 		self.cromossomo[indice] = novo_gene
+		for indice, gene in enumerate(self.cromossomo):
+			if random.random() < self.taxa_mutacao:
+				self.cromossomo[indice] = random.uniform(self.xmin, self.xmax)
 
 	def show_xns(self):
 		string = ""

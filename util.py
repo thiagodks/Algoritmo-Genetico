@@ -1,7 +1,17 @@
 import matplotlib.pyplot as plt
+from termcolor import colored
 import numpy as np
+import functools
 import pickle
- 
+import sys
+
+if len(sys.argv) != 2:
+	print(colored("\nParametros Inválidos!\n", "red"))
+	sys.exit()
+elif (sys.argv[1] != '1' and sys.argv[1] != '0'):
+	print(colored("\nParametros Inválidos!\n", "red"))
+	sys.exit()
+
 def save_log_pop(populacao, nome):
 	with open('solucoes/'+nome+populacao.nome_arq+'.pickle', 'wb') as fp:
 		pickle.dump(populacao, fp)
@@ -10,6 +20,14 @@ def load_log_pop(name):
 	with open('solucoes/'+name+'.pickle', 'rb') as fp:
 		populacao = pickle.load(fp)
 	return populacao
+
+def trackcalls(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        wrapper.has_been_called = True
+        return func(*args, **kwargs)
+    wrapper.has_been_called = False
+    return wrapper
 
 def plot_graphics(populacao, name_save=""):
 
@@ -23,7 +41,7 @@ def plot_graphics(populacao, name_save=""):
 	plt.rcParams.update({'font.size': 20})
 	plt.subplots_adjust(left=0.15, top=0.85)
 	plt.gcf().text(0.01, 0.25, (populacao.parametros + 'Melhor Fitness: %.7f' % populacao.melhor_individuo.fitness +
-					 '\n'+ populacao.melhor_individuo.show_xns() +
+					 # '\n'+ populacao.melhor_individuo.show_xns() +
 					 '\n\nMedia Fitness: %.7f' % populacao.media_fitness +
 					 '\n\nMediana Fitness: %.7f' % populacao.mediana_fitness +
 					 '\n\nStd Fitness: %.7f' % populacao.std_fitness), fontsize=16)
@@ -53,4 +71,4 @@ def plot_graphics(populacao, name_save=""):
 	ax3.tick_params(labelsize=18)
 
 	# plt.legend(bbox_to_anchor=(0.46, 0.8), ncol=1)
-	fig.savefig('graficos/'+name_save+populacao.nome_arq+'fitness.png')
+	fig.savefig('graficos/bin/'+name_save+populacao.nome_arq+'fitness.png')

@@ -1,0 +1,281 @@
+################################################################### BINARIA ##################################################################
+
+npop = [24, 50, 100]
+nger = [24, 50, 100]
+taxa_mutacao = [0.01, 0.05, 0.1]
+taxa_cruzamento = [0.6, 0.8, 1]
+ndim = [2, 5, 10]
+nbits = [i for i in range(4, 12, 2)]
+
+Algoritmo Genético Paralelo em execução...
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 972/972 [01:08<00:00, 14.25it/s]
+
+#####################################
+-> Melhor Solução Encontrada: 
+Método de seleção: Torneio
+Método de Cruzamento: Pontos
+Elitismo: True
+Número de Individuos: 24
+Número de Gerações: 24
+Taxa de Mutação: 0.01
+Taxa de Cruzamento: 1
+Probabilidade do Vencedor: 0.9
+Numero de bits: 10
+Total de bits (Indivíduo): 20
+Numero de dimensões: 2
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 0.0121881540
+Xns:  [0.0029325513196480912, 0.0029325513196480912]
+
+-> Media Fitness : 0.5232805561
+
+-> Mediana Fitness : 0.0285180318
+
+-> STD Fitness : 1.4460786566
+
+#####################################
+-> Pior Solução Encontrada: 
+Método de seleção: Torneio
+Método de Cruzamento: Pontos
+Elitismo: True
+Número de Individuos: 24
+Número de Gerações: 24
+Taxa de Mutação: 0.1
+Taxa de Cruzamento: 1
+Probabilidade do Vencedor: 0.9
+Numero de bits: 4
+Total de bits (Indivíduo): 40
+Numero de dimensões: 10
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 4.6983906390
+Xns:  [-0.19999999999999973, -1.4, 0.20000000000000018, -0.19999999999999973, 1.8000000000000007, 1.0, 0.20000000000000018, -0.19999999999999973, 1.0, 0.6000000000000001]
+
+-> Media Fitness : 7.1246727570
+
+-> Mediana Fitness : 7.2116296947
+
+-> STD Fitness : 0.9464951116
+
+-> Tempo de execução:  69.1570 seg.
+
+Algoritmo Genético Paralelo em execução...
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 972/972 [00:59<00:00, 16.26it/s]
+
+#####################################
+-> Melhor Solução Encontrada: 
+Método de seleção: Torneio
+Método de Cruzamento: Pontos
+Elitismo: True
+Número de Individuos: 24
+Número de Gerações: 24
+Taxa de Mutação: 0.01
+Taxa de Cruzamento: 1
+Probabilidade do Vencedor: 0.9
+Numero de bits: 10
+Total de bits (Indivíduo): 20
+Numero de dimensões: 2
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 0.0121881540
+Xns:  [-0.0029325513196480912, 0.0029325513196480912]
+
+-> Media Fitness : 0.6691236885
+
+-> Mediana Fitness : 0.0121881540
+
+-> STD Fitness : 1.8020415093
+
+#####################################
+-> Pior Solução Encontrada: 
+Método de seleção: Torneio
+Método de Cruzamento: Pontos
+Elitismo: True
+Número de Individuos: 24
+Número de Gerações: 24
+Taxa de Mutação: 0.1
+Taxa de Cruzamento: 0.6
+Probabilidade do Vencedor: 0.9
+Numero de bits: 4
+Total de bits (Indivíduo): 40
+Numero de dimensões: 10
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 4.9834119291
+Xns:  [-0.5999999999999996, 1.8000000000000007, -1.0, -1.0, -1.4, -0.19999999999999973, -0.19999999999999973, -1.0, 0.6000000000000001, 0.20000000000000018]
+
+-> Media Fitness : 6.8721313269
+
+-> Mediana Fitness : 6.9410830299
+
+-> STD Fitness : 1.0888991940
+
+-> Tempo de execução:  60.7005 seg
+
+Algoritmo Genético Paralelo em execução...
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1944/1944 [02:07<00:00, 15.19it/s]
+
+#####################################
+-> Melhor Solução Encontrada: 
+Método de seleção: Torneio
+Método de Cruzamento: Pontos
+Elitismo: True
+Número de Individuos: 24
+Número de Gerações: 24
+Taxa de Mutação: 0.01
+Taxa de Cruzamento: 1
+Probabilidade do Vencedor: 0.9
+Numero de bits: 10
+Total de bits (Indivíduo): 20
+Numero de dimensões: 2
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 0.0121881540
+Xns:  [-0.0029325513196480912, -0.0029325513196480912]
+
+-> Media Fitness : 0.2063805338
+
+-> Mediana Fitness : 0.1095153233
+
+-> STD Fitness : 0.2722164236
+
+#####################################
+-> Pior Solução Encontrada: 
+Método de seleção: Torneio
+Método de Cruzamento: Pontos
+Elitismo: False
+Número de Individuos: 24
+Número de Gerações: 100
+Taxa de Mutação: 0.1
+Taxa de Cruzamento: 0.8
+Probabilidade do Vencedor: 0.9
+Numero de bits: 4
+Total de bits (Indivíduo): 40
+Numero de dimensões: 10
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 6.3185815827
+Xns:  [-0.19999999999999973, 1.0, 1.0, 1.4000000000000004, 1.0, 2.2, -0.5999999999999996, 0.6000000000000001, -0.19999999999999973, -3.0]
+
+-> Media Fitness : 7.5487324984
+
+-> Mediana Fitness : 7.4764093703
+
+-> STD Fitness : 0.5483977304
+
+-> Tempo de execução:  128.9920 seg.
+
+
+################################################################### REAL ##################################################################
+
+npop = [24, 50, 100]
+nger = [24, 50, 100]
+taxa_mutacao = [0.01, 0.05, 0.1]
+taxa_cruzamento = [0.6, 0.8, 1]
+ndim = [2, 5, 10]
+
+Algoritmo Genético Paralelo em execução...
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 243/243 [00:08<00:00, 30.19it/s]
+
+#####################################
+-> Melhor Solução Encontrada: 
+Método de seleção: Roleta
+Método de Cruzamento: Alpha Beta
+Elitismo: True
+Número de Individuos: 50
+Número de Gerações: 100
+Taxa de Mutação: 0.01
+Taxa de Cruzamento: 1
+Probabilidade do Vencedor: 0.9
+Alpha: 0.75
+Beta: 0.25
+Numero de dimensões: 2
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 0.0000000000
+Xns:  [-2.0549063865965748e-16, -4.46829948304888e-17]
+
+-> Media Fitness : 0.1438588079
+
+-> Mediana Fitness : 0.0000000000
+
+-> STD Fitness : 1.0070116550
+
+#####################################
+-> Pior Solução Encontrada: 
+Elitismo: True
+Número de Individuos: 24
+Número de Gerações: 24
+Taxa de Mutação: 0.01
+Taxa de Cruzamento: 0.8
+Probabilidade do Vencedor: 0.9
+Alpha: 0.75
+Beta: 0.25
+Numero de dimensões: 10
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 6.1007073073
+Xns:  [0.7242440342842915, -1.4445481025900353, -0.6401298975744316, 0.19384975913314229, -2.7947833034800973, 1.0142669724627638, -0.9407506100290504, 0.07819168135330656, -0.3713196978085609, -1.5541123358204847]
+
+-> Media Fitness : 8.2601848478
+
+-> Mediana Fitness : 8.3496669017
+
+-> STD Fitness : 0.8286235172
+
+-> Tempo de execução:  8.9370 seg.
+
+
+Algoritmo Genético Paralelo em execução...
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 243/243 [00:08<00:00, 29.19it/s]
+
+#####################################
+-> Melhor Solução Encontrada: 
+Método de seleção: Roleta
+Método de Cruzamento: Alpha Beta
+Elitismo: True
+Número de Individuos: 100
+Número de Gerações: 100
+Taxa de Mutação: 0.01
+Taxa de Cruzamento: 0.6
+Probabilidade do Vencedor: 0.9
+Alpha: 0.75
+Beta: 0.25
+Numero de dimensões: 2
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 0.0000000000
+Xns:  [-2.6748030622406793e-16, -2.1821368552286194e-16]
+
+-> Media Fitness : 0.2479845283
+
+-> Mediana Fitness : 0.0000000000
+
+-> STD Fitness : 1.0865257706
+
+#####################################
+-> Pior Solução Encontrada: 
+Método de seleção: Roleta
+Método de Cruzamento: Alpha Beta
+Elitismo: True
+Número de Individuos: 24
+Número de Gerações: 100
+Taxa de Mutação: 0.01
+Taxa de Cruzamento: 1
+Probabilidade do Vencedor: 0.9
+Alpha: 0.75
+Beta: 0.25
+Numero de dimensões: 10
+xmax & xmin: -3 & 3
+
+-> Melhor Indivíduo: 6.3268294067
+Xns:  [-3.0, 0.8590573642392023, 2.356138739805644, 0.028386644910610048, -0.9128389787920632, -1.326907478232177, 1.3647702729050857, -0.05957804198973227, -1.1405685744997607, -1.0212957590650669]
+
+-> Media Fitness : 8.4684757172
+
+-> Mediana Fitness : 8.7008748831
+
+-> STD Fitness : 0.6804485633
+
+-> Tempo de execução:  9.1309 seg.
